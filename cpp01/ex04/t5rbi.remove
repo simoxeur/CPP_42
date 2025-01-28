@@ -1,0 +1,45 @@
+
+// std::string replace(Session sess, std::string readed)
+// {
+//     std::string replaced;
+//     replaced.resize(readed.length());
+//     int i = 0;
+//     int j = 0;
+//     int tmp = 0;
+
+//     // std::cout << "to replace = " << sess.get_str("replace_to") << '\n';
+
+//     while(readed[i])
+//     {
+//         if(readed[i] == sess.get_str("source")[0])
+//         {
+//             if (readed.substr(i, sess.get_str("source").length()) == sess.get_str("source"))
+//             {
+//                 // replaced += sess.get_str("replace_to");
+//                 i += sess.get_str("source").length();
+//                 replaced.resize(replaced.length() + sess.get_str("replace_to").length());
+//                 tmp = j;
+//                 // j += sess.get_str("replace_to").length();
+//                 while ((j - tmp) < sess.get_str("replace_to").length())
+//                 {
+//                     replaced[j] = sess.get_str("replace_to")[j - tmp];
+//                     j++;
+//                 }
+//             }
+//             else
+//             {
+//                 replaced[j] = readed[i];
+//                 i++, j++;
+//             }
+//         }
+//         else
+//         {
+//             replaced[j] = readed[i];
+//             i++, j++;
+//         }
+//     }
+//     replaced.resize(j);
+//     // std::cout << "replaced last = " << replaced << '\n';
+//     // replaced[j] = '\0';
+//     return replaced;
+// }
