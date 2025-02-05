@@ -1,14 +1,16 @@
-#include "replace.hpp"
+#include "Session.hpp"
 
-int read_replace(Session sess)
+int read_replace(const Session& sess)
 {
 	std::string line, tmp, join;
-	std::ifstream inf{sess.get_infile()};
-	std::ofstream outf{sess.get_outfile()};
-
-	if (!outf || !inf)
-	{
-		std::cerr << "error: couldn't open the file\n";
+	std::ifstream inf(sess.get_infile());
+	if (!inf.is_open()){
+		std::cerr << "error: couldn't open the infile\n";
+		return 1;
+	}
+	std::ofstream outf(sess.get_outfile());
+	if (!outf.is_open()){
+		std::cerr << "error: couldn't open the outfile\n";
 		return 1;
 	}
 	std::getline(inf, line);
@@ -20,45 +22,26 @@ int read_replace(Session sess)
 	}
 	join += tmp;
 	join = replace(sess, join);
-	outf <<join;
+	outf << join;
+	inf.close();
+	outf.close();
 	return 0;
 }
 
-size_t find_str(std::string collect, std::string to_find, size_t start)
+std::string replace(const Session& sess, std::string readed)
 {
-	size_t pos = 0;
-	while ((pos = collect.find_first_of(to_find[0], start)) < collect.length())
-	{
-		if (collect.substr(pos, to_find.length()) == to_find)
-			return pos;
-		start = pos + 1;
-	}
-	return collect.length();
-}
+    std::string replaced;
+    size_t pos = 0, prev = 0;
+    const std::string& source = sess.get_str("source");
+    const std::string& new_str = sess.get_str("replace_to");
+	if (source.empty())
+		return readed;
 
-std::string replace(Session sess, std::string readed)
-{
-	size_t i = 0, ii = 0, j = 0, pos = 0;
-	std::string replaced{""};
-
-	replaced.resize(readed.length());
-	while (ii < readed.length())
-	{
-		pos = find_str(readed, sess.get_str("source"), ii);
-		if (pos != readed.length())
-			replaced.resize(replaced.length() + (sess.get_str("replace_to").length() - sess.get_str("source").length()));
-		while (ii < pos)
-		{
-			replaced[i] = readed[ii];
-			i++, ii++;
-		}
-		j = 0;
-		while (j < sess.get_str("replace_to").length())
-		{
-			replaced[i] = sess.get_str("replace_to")[j];
-			i++, j++;
-		}
-		ii = pos + sess.get_str("source").length();
-	}
-	return replaced;
+    while ((pos = readed.find(source, prev)) != std::string::npos) {
+        replaced.append(readed, prev, pos - prev);  // Append part before match
+        replaced.append(new_str);                  // Append replacement
+        prev = pos + source.length();              // Move past the match
+    }
+    replaced.append(readed, prev);                 // Append the rest of the string
+    return replaced;
 }

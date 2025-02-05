@@ -2,7 +2,7 @@ NAME	= replace
 
 CPP		= c++
 
-FLAGS	= -Wall -Wextra -Werror -std=c++98
+# FLAGS	= -Wall -Wextra -Werror
 
 SRCS		=	main.cpp	replace.cpp	Session.cpp
 

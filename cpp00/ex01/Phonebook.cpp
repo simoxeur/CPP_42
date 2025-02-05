@@ -45,8 +45,9 @@ std::string intput_data(const std::string &to_search) {
     return readed;
 }
 
-std::string align(std::string source, const size_t width = 10)
+std::string align(std::string source)
 {
+    const size_t width = 10;
     if (source.length() > width)
         return source.substr(0, width - 1) + ".";
     return source;
@@ -104,13 +105,14 @@ void PhoneBook::get_contact(int n)
     for(int i = 0; i < n && i < MAX_CONTACTS; i++)
     {
         std::cout << "|" << std::setw(10) << i + 1  << "|"
-        << std::setw(10) << c[i].get_data("first name") << "|"
-        << std::setw(10) << c[i].get_data("last name") << "|"
-        << std::setw(10) << c[i].get_data("nickname") << "|"
+        << std::setw(10) << c[i].get_aligned_data("first name") << "|"
+        << std::setw(10) << c[i].get_aligned_data("last name") << "|"
+        << std::setw(10) << c[i].get_aligned_data("nickname") << "|"
         << std::endl;
     }
 
-        std::cout << "Enter index to view details: ";
+    std::cout << "Enter index to view details: ";
+
     std::string input;
     std::getline(std::cin, input);
 

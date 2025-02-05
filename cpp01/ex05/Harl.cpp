@@ -34,6 +34,7 @@ Harl::~Harl(){}
 void Harl::complain(std::string level)
 {
     int i = -1;
+    // int chech = (level == "DEBUG") * 1 + (level == "INFO") * 2 + .... - 1
     while (++i < 4){
         if (Harl::level[i] == level){
             (this->*complain_list[i])(); return;

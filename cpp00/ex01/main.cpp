@@ -2,9 +2,10 @@
 
 int main()
 {
+    PhoneBook   my_phonebook;
     std::string cmd;
-    PhoneBook my_phonebook;
     int n = 0;
+
     std::cout << "possible command: ADD, SEARCH, EXIT" << std::endl;
     while (true)
     {

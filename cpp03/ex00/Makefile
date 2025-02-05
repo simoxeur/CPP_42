@@ -1,16 +1,16 @@
-NAME	= replace
+NAME	= prog
 
 CPP		= c++
 
 FLAGS	= -Wall -Wextra -Werror -std=c++98
 
-SRCS		=	main.cpp	replace.cpp	Session.cpp
+SRCS		=	main.cpp	ClapTrap.cpp
 
 OBJS	=		${SRCS:.cpp=.opp}
 
 all: $(NAME)
 
-%.opp:%.cpp Session.hpp
+%.opp:%.cpp ClapTrap.hpp	Makefile
 	@$(CPP) ${FLAGS} -c $< -o $@
 
 $(NAME): 		${OBJS}
