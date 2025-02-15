@@ -1,0 +1,33 @@
+==1282== Memcheck, a memory error detector
+==1282== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==1282== Using Valgrind-3.24.0 and LibVEX; rerun with -h for copyright info
+==1282== Command: ./prog
+==1282== Parent PID: 1281
+==1282== 
+==1282== 
+==1282== Process terminating with default action of signal 1 (SIGHUP)
+==1282==    at 0x40099C0: _dl_new_hash (dl-new-hash.h:80)
+==1282==    by 0x40099C0: _dl_lookup_symbol_x (dl-lookup.c:773)
+==1282==    by 0x400DF46: resolve_map (dl-reloc.c:190)
+==1282==    by 0x400DF46: elf_machine_rela (dl-machine.h:280)
+==1282==    by 0x400DF46: elf_dynamic_do_Rela (do-rel.h:147)
+==1282==    by 0x400DF46: _dl_relocate_object (dl-reloc.c:301)
+==1282==    by 0x40200F0: dl_main (rtld.c:2314)
+==1282==    by 0x401C805: _dl_sysdep_start (dl-sysdep.c:141)
+==1282==    by 0x401E15D: _dl_start_final (rtld.c:494)
+==1282==    by 0x401E15D: _dl_start (rtld.c:581)
+==1282==    by 0x401CE47: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+==1282== 
+==1282== HEAP SUMMARY:
+==1282==     in use at exit: 0 bytes in 0 blocks
+==1282==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==1282== 
+==1282== All heap blocks were freed -- no leaks are possible
+==1282== 
+==1282== For lists of detected and suppressed errors, rerun with: -s
+==1282== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+ not shown.
+==1080== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==1080== 
+==1080== For lists of detected and suppressed errors, rerun with: -s
+==1080== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -23,33 +23,28 @@ void Harl::error()
     std::cout << "This is unacceptable! I want to speak to the manager now." << std::endl;
 }
 
-std::string Harl::level[] {"DEBUG", "INFO", "WARNING", "ERROR"};
-
 Harl::Harl(){}
 
 Harl::~Harl(){}
 
 void Harl::complain(std::string level)
 {
-    int i = -1;
-    while (++i < 4){
-        if (Harl::level[i] == level){
-            break;
-    }   }
-    while (i < 4){
-        switch (i)
+    int l_index = (level == "DEBUG") * 1 + (level == "INFO") * 2
+        + (level == "WARNING") * 3 + (level == "ERROR") * 4 +  - 1;
+    while (l_index < 4){
+        switch (l_index)
         {
         case 0:
-            debug(), i++;
+            debug(), l_index++;
             break;
         case 1:
-            info(), i++;
+            info(), l_index++;
             break;
         case 2:
-            warning(), i++;
+            warning(), l_index++;
             break;
         case 3:
-            error(), i++;
+            error(), l_index++;
             return;
         }
     }

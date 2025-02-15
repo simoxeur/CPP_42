@@ -11,7 +11,6 @@ class Harl
         void info( void );
         void warning( void );
         void error( void );
-        static std::string level[];
         typedef void (Harl::*ptr)(void);
         static ptr complain_list[];
 

@@ -1,16 +1,16 @@
-NAME	= Harl
+NAME	= prog
 
 CPP		= c++
 
 FLAGS	= -Wall -Wextra -Werror -std=c++98
 
-SRCS		=	main.cpp	Harl.cpp
+SRCS		=	main.cpp	Animal.cpp Dog.cpp Cat.cpp	WrongAnimal.cpp WrongCat.cpp
 
 OBJS	=		${SRCS:.cpp=.opp}
 
 all: $(NAME)
 
-%.opp:%.cpp Harl.hpp
+%.opp:%.cpp Animal.hpp Dog.hpp Cat.hpp WrongAnimal.hpp	WrongCat.hpp	Makefile
 	@$(CPP) ${FLAGS} -c $< -o $@
 
 $(NAME): 		${OBJS}

@@ -23,8 +23,6 @@ void Harl::error()
     std::cout << "This is unacceptable! I want to speak to the manager now." << std::endl;
 }
 
-std::string Harl::level[] {"DEBUG", "INFO", "WARNING", "ERROR"};
-
 Harl::ptr Harl::complain_list[] = {&Harl::debug, &Harl::info, &Harl::warning, &Harl::error};
 
 Harl::Harl(){}
@@ -33,11 +31,10 @@ Harl::~Harl(){}
 
 void Harl::complain(std::string level)
 {
-    int i = -1;
-    // int chech = (level == "DEBUG") * 1 + (level == "INFO") * 2 + .... - 1
-    while (++i < 4){
-        if (Harl::level[i] == level){
-            (this->*complain_list[i])(); return;
-    }   }
-
+    int l_index = (level == "DEBUG") * 1 + (level == "INFO") * 2
+        + (level == "WARNING") * 3 + (level == "ERROR") * 4 +  - 1;
+    if (l_index == -1)
+        return ;
+    (this->*complain_list[l_index])();
+    return ;
 }
