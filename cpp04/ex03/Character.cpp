@@ -1,5 +1,13 @@
 #include "Character.hpp"
 
+Character::Character() : name("") 
+{
+    for(int i = 0; i < 4; i++)
+        materia_slot[i] = NULL;
+    for(int i = 0; i < 4; i++)
+        garbage[i] = NULL;
+}
+
 Character::Character(std::string name)
     : name(name)
 {

@@ -5,14 +5,8 @@
 #include "MateriaSource.hpp"
 #include <cstdlib>
 
-void leaks()
-{
-    system("valgrind --leak-check=full --log-file=ttt.log ./prog");
-}
-
 int main()
 {
-    // atexit(leaks);
     IMateriaSource* src = new MateriaSource();
     src->learnMateria(new Ice());
     src->learnMateria(new Cure());

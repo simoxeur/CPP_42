@@ -12,6 +12,7 @@ class Character : public ICharacter
         AMateria* garbage[4];
 
     public:
+        Character();
         Character(std::string name);
         Character(const Character&);
         Character& operator=(const Character&);

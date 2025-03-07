@@ -1,5 +1,7 @@
 #include "DiamondTrap.hpp"
 
+DiamondTrap::DiamondTrap() : ClapTrap(), ScavTrap(), FragTrap(){}
+
 DiamondTrap::DiamondTrap(std::string name)
     : ClapTrap(name + "_clap_name", 100, 50, 30)
     , ScavTrap(name)

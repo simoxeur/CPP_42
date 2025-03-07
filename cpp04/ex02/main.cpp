@@ -5,14 +5,8 @@
 #include "WrongCat.hpp"
 #include <cstdlib>
 
-void leaks()
-{
-    system("valgrind --leak-check=full --log-file=ttt.log ./prog");
-}
-
 int main()
 {
-    // atexit(leaks);
     const Animal* j = new Dog();
     const Animal* i = new Cat();
 

@@ -1,5 +1,7 @@
 #include "ClapTrap.hpp"
 
+ClapTrap::ClapTrap() : name(""), hit_points(0), energy_points(0), attack_damage(0){}
+
 ClapTrap::ClapTrap(std::string name, int hit_point = 10, int energy_points = 10, int attack_damage = 0)
     : name(name)
     , hit_points(hit_point)

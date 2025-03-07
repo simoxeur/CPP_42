@@ -1,5 +1,7 @@
 #include "ScavTrap.hpp"
 
+ScavTrap::ScavTrap() : ClapTrap() {}
+
 ScavTrap::ScavTrap(std::string name)
     : ClapTrap(name, 100, 50, 20)
 {
