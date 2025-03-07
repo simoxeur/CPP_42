@@ -25,12 +25,13 @@ class Span
         void addNumber(int);
 
         void add_rangeNumbers(it first, it last);
+        void add_rangeNumbers(int* first, int* last);
 
-        void show(int n){
-            for(int i = 0; i < n; i++){
-                std::cout << "the element " << i << " is = " << vec[i] << '\n';
-            }
-        }
+        void print();
+        unsigned int size();
+
+        unsigned int shortestSpan();
+        unsigned int longestSpan();
 
         class FullSpanException : public std::exception
         {
@@ -42,8 +43,6 @@ class Span
             public:
                 const char* what() const throw();
         };
-        unsigned int shortestSpan();
-        unsigned int longestSpan();
 };
 
 #endif

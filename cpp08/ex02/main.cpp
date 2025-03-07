@@ -3,33 +3,41 @@
 int main()
 {
     MutantStack<int> mstack;
-
-    mstack.push(5);
-    mstack.push(17);
-
-    std::cout << mstack.top() << std::endl;
-
-    mstack.pop();
-
-    std::cout << mstack.size() << std::endl;
-
-    mstack.push(3);
-    mstack.push(5);
-    mstack.push(737);
-    //[...]
-    mstack.push(0);
-
-    MutantStack<int>::iterator it = mstack.begin();
-    MutantStack<int>::iterator ite = mstack.end();
-
-    ++it;
-    --it;
-
-    while (it != ite)
-    {
-        std::cout << *it << std::endl;
-        ++it;
+    
+    for(int i = 0; i < 20; i++){
+        mstack.push(i);
     }
-    std::stack<int> s(mstack);
+    std::size_t size = mstack.size();
+
+    // creating a copy stack
+    MutantStack<int> cpstack(mstack);
+    std::size_t cpsize = cpstack.size();
+
+    std::cout << "the size of mstack = " << size << '\n';
+
+    std::cout << "\n------printing the values using top pop ------\n";
+
+    for(std::size_t i = 0; i < size; i++){
+        std::cout << mstack.top() << "  ";
+        mstack.pop();
+    }
+    std::cout << '\n';
+
+    std::cout << "\nthe size of cptack = " << cpsize << '\n';
+
+    std::cout << "\n------printing the values using iterators ------\n";
+
+
+    MutantStack<int>::iterator it = cpstack.begin();
+    MutantStack<int>::iterator ite = cpstack.end();
+
+    --ite;
+
+    while (it <= ite)
+    {
+        std::cout << *ite << "  ";
+        --ite;
+    }
+    std::cout << '\n';
     return 0;
 }

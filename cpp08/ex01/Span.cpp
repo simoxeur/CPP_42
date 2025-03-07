@@ -25,7 +25,7 @@ Span::~Span(){}
 
 void Span::addNumber(int number)
 {
-    if(vec.size() >= n)
+    if(vec.size() >= n)  // check if should use >
         throw FullSpanException();
     vec.push_back(number);
 }
@@ -36,31 +36,29 @@ void Span::add_rangeNumbers(it first, it last)
 
     if (vec.size() + range_size > n) 
         throw FullSpanException();
-    for (it it = first; it != last; ++it) {
-        vec.push_back(*it);
+    vec.insert(vec.end(), first, last);
+}
+
+void Span::add_rangeNumbers(int* first, int* last)
+{
+    size_t range_size = std::distance(first, last);
+
+    if (vec.size() + range_size > n) 
+        throw FullSpanException();
+    for (int* ptr = first; ptr != last; ++ptr) {
+        vec.push_back(*ptr);
     }
 }
 
-// template <typename iterartor>
-// void Span::add_rangeNumbers(iterartor first, iterartor last)
-// {
-//     size_t range_size = std::distance(first, last);
-//     if (vec.size() + range_size > n)
-//         throw FullSpanException();
-//     vec.reserve(vec.size() + range_size);
-//     for(iterartor it = first; it != last; it++){
-//         vec.push_back(*it);
-//     }
-// }
-
-
 unsigned int Span::shortestSpan()
 {
-    unsigned int minSpan(std::numeric_limits<unsigned int>::max()), curSpan(0);
     if(vec.size() < 2)
         throw NoSpanException();
+
     std::sort(vec.begin(), vec.end());
-    for(unsigned int i = 0; i < n - 1; i++){
+    unsigned int minSpan(std::numeric_limits<unsigned int>::max()), curSpan(0);
+    
+    for(unsigned int i = 0; i < vec.size() - 1; i++){
         curSpan = vec[i + 1] - vec[i];
         if(curSpan < minSpan)
             minSpan = curSpan;
@@ -70,16 +68,31 @@ unsigned int Span::shortestSpan()
 
 unsigned int Span::longestSpan()
 {
-    unsigned int longSpan(0);
+    if(vec.size() < 2)
+    throw NoSpanException();
+    
     int min = *std::min_element(vec.begin(), vec.end());
     int max = *std::max_element(vec.begin(), vec.end());
-    longSpan = static_cast<unsigned int>(max - min);
-    return longSpan;
+    
+    return static_cast<unsigned int>(max - min);
+}
+
+void Span::print()
+{
+    for(it it = vec.begin(); it != vec.end(); ++it){
+        std::cout << *it << "  ";
+    }
+    std::cout << std::endl;
+}
+
+unsigned int Span::size()
+{
+    return n;
 }
 
 const char* Span::FullSpanException::what() const throw()
 {
-    return "out of range";
+    return "The span is full";
 }
 
 const char* Span::NoSpanException::what() const throw()

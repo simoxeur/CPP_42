@@ -23,7 +23,7 @@ clean:
 
 fclean: 	clean
 	@rm -f $(NAME)
-	@@echo "removed" ${NAME};
+	@echo "removed" ${NAME};
 
 re:		fclean all
 

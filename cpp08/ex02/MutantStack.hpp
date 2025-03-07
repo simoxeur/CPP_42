@@ -13,10 +13,12 @@ class MutantStack : public std::stack<T, Container>
 {
     public:
         typedef typename Container::iterator iterator;
+
         MutantStack();
         MutantStack(const MutantStack&);
         MutantStack& operator=(const MutantStack& );
         ~MutantStack();
+        
         iterator begin();
         iterator end();
 };
