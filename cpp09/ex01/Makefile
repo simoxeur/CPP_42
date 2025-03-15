@@ -1,25 +1,25 @@
-NAME	= prog
-
+NAME	= RPN
 CPP		= c++
+
 
 FLAGS	= -Wall -Wextra -Werror -std=c++98
 
-SRCS		=	main.cpp
+SRCS		=	main.cpp	RPN.cpp
 
 OBJS	=		${SRCS:.cpp=.opp}
 
 all: $(NAME)
 
-%.opp:%.cpp easyfind.hpp	easyfind.tpp	Makefile
-	@$(CPP) ${FLAGS} -c $< -o $@
+%.opp:%.cpp	RPN.hpp
+	$(CPP) ${FLAGS} -c $< -o $@
 
 $(NAME): 		${OBJS}
-	@$(CPP) ${FLAGS} ${OBJS} -o ${NAME}
-	@echo "finished";
+	$(CPP) ${FLAGS} ${OBJS} -o ${NAME}
+# echo "finished";
 
 clean:
-	@rm -f ${OBJS}
-	@echo "removed files";
+	rm -f ${OBJS}
+# echo "removed files";
 
 fclean: 	clean
 	rm -f $(NAME)
