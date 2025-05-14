@@ -80,17 +80,13 @@ PmergeMe* take_nbrs(char **_args, int count)
 
 void PmergeMe::sort(void)
 {
-    // vtimer = current_time_us();
     vtimer = clock();
     merge_insertion_sort<std::vector<int>, v_it>(get_vlist());
     vtimer = clock() - vtimer;
-    // vtimer = current_time_us() - vtimer;
 
-    // dtimer = current_time_us();
     dtimer = clock();
     merge_insertion_sort<std::deque<int>, d_it>(get_dlist());
     dtimer = clock() - dtimer;
-    // dtimer = current_time_us() - dtimer;
 }
 
 void PmergeMe::print(void)
@@ -105,12 +101,6 @@ void PmergeMe::print(void)
     std::cout << "Time to process a range of   " << get_vlist().size() << " elements with std::vector :  " << vtimer / 1000.0 << " ms\n";
     std::cout << "Time to process a range of   " << get_dlist().size() << " elements with std::deque :  " << dtimer / 1000.0 << " ms\n";
 
-}
-
-long long current_time_us() {
-    timeval tv;
-    gettimeofday(&tv, NULL);
-    return tv.tv_sec * 1000000LL + tv.tv_usec;
 }
 
 unsigned long jacobsthal_sec(int n)

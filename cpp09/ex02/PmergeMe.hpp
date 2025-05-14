@@ -19,10 +19,8 @@ bool is_sorted(container& lst)
     int tmp_value = *it;
     while(++it != lst.end())
     {
-        if(*(it) < tmp_value){
-            // std::cout << "-----------> " << *(it) << "  || " << tmp_value << '\n';
+        if(*(it) < tmp_value)
             return false;
-        }
         tmp_value = *it;
     }
     return true;
@@ -39,7 +37,6 @@ class PmergeMe
         std::clock_t dtimer;
 
     public:
-        // the canonical form need here
         PmergeMe( std::vector<int>, std::deque<int> );
         PmergeMe( const PmergeMe& );
         PmergeMe& operator=( const PmergeMe& );
@@ -60,7 +57,7 @@ class PmergeMe
         }
 
         template <typename container, typename iterator>
-        void merge(container& lst)  // the previous one was ==> void merge(std::deque<int>& lst)
+        void merge(container& lst)
         {
             iterator first1;
             iterator last1;
@@ -197,7 +194,6 @@ class PmergeMe
                     break;
                 
                 jacob_id = static_cast<int>(jacobsthal_sec(++n) % total_p_chunks);
-                // jacob_id = 0;
 				p_chunk_start = pend.begin() + jacob_id * level;
 				p_chunk_end = p_chunk_start + level - 1;
                 m_it = upper_pair_it<container, iterator>(main, *p_chunk_end);
@@ -211,7 +207,6 @@ class PmergeMe
         template <typename container, typename iterator>
         void new_list(container& lst, container& main)
         {
-            // lst.resize(main.size());
             iterator m_it = main.begin();
             iterator lst_it = lst.begin();
             while(m_it != main.end())
@@ -228,16 +223,8 @@ class PmergeMe
             container main;
             container pend;
             
-            if(level <= 0){
-                // if(is_sorted<container, iterator>(lst))
-                //     return ;
-                // else{
-                //     level = 1;
-                //     merge<container, iterator>(lst);
-                //     insert<container, iterator>(lst);
-                // }
+            if(level <= 0)
                 return;
-            }
             
             main = main_gen<container, iterator>(lst);
             pend = pend_gen<container, iterator>(lst);
@@ -274,8 +261,5 @@ class PmergeMe
 };
 
 PmergeMe*	take_nbrs(char **args, int count);
-long long	current_time_us();
-
-
 
 #endif
