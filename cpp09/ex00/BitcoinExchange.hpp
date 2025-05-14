@@ -5,34 +5,41 @@
 #include <fstream>
 #include <exception>
 #include <algorithm>
-#include <vector>
+#include <map>
+#include <list>
 #include <iomanip>
 
 class Ressources
 {
     private:
+        std::string infile_path;
         std::ifstream input_file;
         std::ifstream db_file;
-        std::vector<std::string> _date;
-        std::vector<std::string> _value;
-        std::vector<int> _rate_exchange;
-        std::vector<std::string> _err_msg;
-        // std::vector<std::string> output;
-        std::vector<std::string> db_date;
-        std::vector<std::string> db_rate;
+        std::list<std::string> _dates;
+        std::list<std::string> _values;
+        std::list<std::string> _rate_exchange;
+        std::list<std::string> _lst_err;
+        std::map<std::string, std::string> _rates;
 
     public:
+        Ressources();
         Ressources(char *);
-        // Ressources(std::ifstream*, std::ifstream*);
-        // Ressources(const Ressources&);
-        // Ressources& operator=(const Ressources&);
-        // ~Ressources();
+        Ressources(const Ressources&);
+        Ressources& operator=(const Ressources&);
+        ~Ressources();
+
+        
+        typedef std::list<std::string>::iterator it;
+        typedef std::map<std::string, std::string>::iterator m_it;
+
         void validate_infile();
-        void get_data(std::string, int);
-        void check_date(std::string&, std::string&);
-        void check_value(std::string&, std::string&);
-        void append_rate(int);
+        it get_data(std::string&, it cur);
+        int check_date(std::string&);
+        int check_value(std::string&);
+        void append_rate(it dates_it);
+        void empty_insert(void);
         void display(void);
+
 
         class FailOpen : public std::exception
         {

@@ -14,8 +14,12 @@ class RPN
         std::stack<double> s;
 
     public:
+    // --------------> cnonical form;
+        RPN();
         RPN(std::string);
-        // --------------> cnonical form;
+        RPN(const RPN&);
+        RPN& operator=(const RPN&);
+        ~RPN();
 
         void calculate_rpn();
         double get_result();

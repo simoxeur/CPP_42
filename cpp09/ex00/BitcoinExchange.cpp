@@ -1,20 +1,52 @@
 #include "BitcoinExchange.hpp"
 
+Ressources::Ressources(){}
+
 Ressources::Ressources(char* file)
 {
+    infile_path = static_cast<std::string>(file);
     input_file.open(file);
-    if(!input_file)
+    if(input_file.fail())
         throw FailOpen();
     db_file.open("data.csv");
-    if(!db_file)
+    if(db_file.fail())
         throw FailOpen();
 
     std::string str;
     std::getline(db_file, str);
     while(std::getline(db_file, str)){
-        db_date.push_back(str.substr(0, 10));
-        db_rate.push_back(str.substr(str.find(',') + 1));
+        _rates[str.substr(0, 10)] = str.substr(str.find(',') + 1);
     }
+    db_file.close();
+}
+
+Ressources::Ressources(const Ressources& other)
+    : infile_path(other.infile_path)
+    , _rates(other._rates)
+{
+    input_file.close();
+    input_file.open(infile_path.c_str());
+    if(input_file.fail())
+        throw FailOpen();
+}
+
+Ressources& Ressources::operator=(const Ressources& other)
+{
+    if(this != &other)
+    {
+        infile_path = other.infile_path;
+        _rates = other._rates;
+        input_file.close();
+        input_file.open(infile_path.c_str());
+        if(input_file.fail())
+            throw FailOpen();
+    }
+    return *this;
+}
+
+Ressources::~Ressources()
+{
+    input_file.close();
 }
 
 static void erase_sp(std::string& str)
@@ -85,89 +117,94 @@ bool is_float(std::string& str)
     return ret;
 }
 
-void Ressources::check_date(std::string& date, std::string& err_msg)
+int Ressources::check_date(std::string& date)
 {
     std::string year = date.substr(0, 4);
     std::string month = date.substr(date.find('-') + 1, 2);
     std::string day = date.substr(date.find_last_of('-') + 1, 2);
-    if(year.length() != 4 || !is_number(year) || month.length() != 2 || !is_number(month) || day.length() != 2 || !is_number(day)){
-        date = "";
-        err_msg = "Error: date format not valid.";
-        return ;
-    }
+    if(year.length() != 4 || !is_number(year) || month.length() != 2 || !is_number(month) || day.length() != 2 || !is_number(day))
+        return 1;
     int y = std::atoi(year.c_str()), m = std::atoi(month.c_str()), d = std::atoi(day.c_str());
-    if(!calendrier_valid(y, m, d)){
-        date = "";
-        err_msg = "Error: date format not valid.";
-        return ;
-    }
+    if(!calendrier_valid(y, m, d))
+        return 1;
+    return 0;
 }
 
-void Ressources::check_value(std::string& value, std::string& err_msg)
+int Ressources::check_value(std::string& value)
 {
     float v;
-    if(!is_number(value) && !is_float(value)){
-        value = "";
-        if(err_msg.empty())
-            err_msg = "Error: value is not valid.";
-        return;
-    }
-    if(is_float(value))
+    if(!is_number(value) && !is_float(value))
+        return 2;
+    // if(is_float(value))
         v = static_cast<float>(std::atof(value.c_str()));
-    else
-        v = static_cast<float>(std::atoi(value.c_str()));
-    if(v > 1000){
-        value = "";
-        if(err_msg.empty())
-            err_msg = "Error: too large a number.";
-    }
-    if(v < 0){
-        value = "";
-        if(err_msg.empty())
-            err_msg = "Error: not a positive number.";
-    }
-    return;
+    // else
+    //     v = static_cast<float>(std::atoi(value.c_str()));
+    if(v > 1000)
+        return 3;
+    if(v < 0)
+        return 4;
+    return 0;
 
 }
 
-void Ressources::get_data(std::string format, int id)
+void Ressources::empty_insert(void)  // in case of an error in a line i push an empty string in all the conatiners to just keep the container _lst_err and check after that there is an error
 {
+    _dates.push_back("");
+    _values.push_back("");
+    _rate_exchange.push_back("");
+}
+
+Ressources::it Ressources::get_data(std::string& format, Ressources::it cur)
+{
+    int r = 0;
+
     std::string date = format.substr(0, format.find('|'));
     std::string value = format.substr(format.find('|') + 1);
     std::size_t del = format.find('|');
-    _err_msg.push_back("");
-    _rate_exchange.push_back(0);
     if(del == std::string::npos){
-        _err_msg[id] = "Error: bad input => " + format;
-        _date.push_back("");
-        _value.push_back("");
-        return;
+        empty_insert();
+        _lst_err.push_back("Error: bad input => " + format);
+        return ++cur;
     }
+    
     erase_sp(date);
     erase_sp(value);
-    check_date(date, _err_msg[id]);
-    check_value(value, _err_msg[id]);
-    _date.push_back(date);
-    _value.push_back(value);
+    if((r = check_date(date)) == 1){
+        empty_insert();
+        _lst_err.push_back("Error: date format not valid.");
+        return ++cur;
+    }
+    std::string err[3] = {"Error: value is not valid.", "Error: too large number.", "Error: not a positive number."};
+    if((r = check_value(value)) > 1){
+        empty_insert();
+        _lst_err.push_back(err[r - 2]);
+        return ++cur;
+    }
+    _dates.push_back(date);
+    _values.push_back(value);
+    return ++cur;
 }
 
-void Ressources::append_rate(int index)  // index for the date we have in infile inside the vector _date
+void Ressources::append_rate(it dates_it)  // index for the date we have in infile inside the vector _date
 {
-    if(_date[index].empty() || _value[index].empty())
+    if((*dates_it).empty())
         return;
+    m_it rates_it = _rates.begin();
+    m_it exchange_it = rates_it;
 
-    int rate_id = 0;  // i will use it to get the closest and less date possible for the date we have
-    for(std::size_t db_id = 0; db_id < db_date.size(); db_id++){  // loop for the db content inside a vecotr db_date
-        if(db_date[db_id] <= _date[index])
-            rate_id = db_id;
+    for(; rates_it != _rates.end(); rates_it++){  // loop for the db content inside a map _rates
+        if((*rates_it).first <= *dates_it)
+                exchange_it = rates_it;
         else
             break;
     }
-    _rate_exchange[index] = rate_id;
+    _rate_exchange.push_back((*exchange_it).second);
 }
 
 void Ressources::validate_infile()
 {
+    it dates_it = _dates.begin();
+
     std::string format;
     std::getline(input_file, format);
     if(bad_format(format))
@@ -175,26 +212,26 @@ void Ressources::validate_infile()
     int i = 0;
     while(std::getline(input_file, format))
     {
-        get_data(format, i);
-        append_rate(i);
+        dates_it = get_data(format, dates_it);
+        append_rate(dates_it);
         i++;
     }
 }
 
 void Ressources::display(void)
 {
-    float value = 0, rate = 0, prod = 0;
-    for(std::size_t i = 0; i < _date.size(); i++){
-        if(!_date[i].empty() && !_value[i].empty()){
-            value = std::atof(_value[i].c_str());
-            rate = std::atof(db_rate[_rate_exchange[i]].c_str());
-            prod = value * rate;
-            std::cout << _date[i] << " => " << value << " = " << prod << '\n';
+    it dates_it = _dates.begin();
+    it values_it = _values.begin();
+    it exchange_rates_it = _rate_exchange.begin();
+    it err_it = _lst_err.begin();
+    for(; values_it != _values.end(), dates_it != _dates.end(), exchange_rates_it != _rate_exchange.end() ; dates_it++, values_it++, exchange_rates_it++){
+        if(!(*dates_it).empty() && !(*values_it).empty() && !(*exchange_rates_it).empty())
+            std::cout << *dates_it << " => " << *values_it << " = " << std::atof((*values_it).c_str()) * std::atof((*exchange_rates_it).c_str()) << '\n';
+        else{
+            std::cout << *err_it << '\n';
+            ++err_it;
         }
-        else
-            std::cout << _err_msg[i] << '\n';
     }
-    // std::cout << "\n-----------------\n" << static_cast<float>(2.27) << '\n';
 }
 
 const char* Ressources::FailOpen::what() const throw()

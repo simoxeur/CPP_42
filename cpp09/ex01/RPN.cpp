@@ -1,8 +1,26 @@
 #include "RPN.hpp"
 
+// ----------> canonical form
+
+RPN::RPN(){}
+
 RPN::RPN(std::string s) : input(s) {}
 
-// ----------> canonical form
+RPN::RPN(const RPN& other)
+    : input(other.input)
+{}
+
+RPN& RPN::operator=(const RPN& other)
+{
+    if(this != &other)
+    {
+        input = other.input;
+    }
+    return *this;
+}
+
+RPN::~RPN(){}
+
 
 static std::string get_token(std::string str, std::size_t start)
 {
