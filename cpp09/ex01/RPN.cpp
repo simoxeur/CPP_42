@@ -35,10 +35,11 @@ static std::string get_token(std::string str, std::size_t start)
 static void erase_sp(std::string& str)
 {
     std::size_t start = 0;
-    std::size_t end = str.length() - 1;
     while(str[start] == ' ') start++;
-    while(str[end] == ' ') end--;
     str.erase(0, start);
+
+    std::size_t end = str.length() - 1;
+    while(str[end] == ' ') end--;
     str.erase(end + 1);
 }
 
@@ -74,9 +75,10 @@ void RPN::calculate_rpn()
                     throw DevisionByZero();
                 s.push(b / a);
             }
-
         }
     }
+    if(s.size() != 1)
+        throw incompleteExpression();
     result = s.top();
 }
 
@@ -95,3 +97,7 @@ const char* RPN::DevisionByZero::what(void) const throw()
     return "error: devision by 0";
 }
 
+const char* RPN::incompleteExpression::what(void) const throw()
+{
+    return "error: incomplete expression used";
+}

@@ -100,45 +100,48 @@ bool is_number(std::string str)
 
 bool is_float(std::string& str)
 {
-    int fcount = 0, pcount = 0;
-    if(str.find('f') != str.length() - 1 || str.find('.') == str.length() || str.find('.') == 0)
+    int pcount = 0;
+    if(str.find('.') == str.length() || str.find('.') == 0)
         return false;
     for(std::size_t i = 0; i < str.length(); i++){
-        if(str[i] == 'f')
-            fcount++;
         if(str[i] == '.')
             pcount++;
-        if((!std::isdigit(str[i]) && str[i] != 'f' && str[i] != '.') || fcount > 1 || pcount > 1)
+        if((!std::isdigit(str[i]) && str[i] != 'f' && str[i] != '.') || pcount > 1)
             return false;
     }
-    if(fcount)
-        str.erase(str.find('f'));
     bool ret = (str.find('.') == str.find_last_of('.'));
     return ret;
 }
 
 int Ressources::check_date(std::string& date)
 {
-    std::string year = date.substr(0, 4);
-    std::string month = date.substr(date.find('-') + 1, 2);
-    std::string day = date.substr(date.find_last_of('-') + 1, 2);
-    if(year.length() != 4 || !is_number(year) || month.length() != 2 || !is_number(month) || day.length() != 2 || !is_number(day))
+    if(date.empty())
         return 1;
+    std::size_t sep1 = date.find('-');
+    std::size_t sep2 = date.find_last_of('-');
+    if(sep1 == std::string::npos || sep2 == std::string::npos)
+        return 2;
+    std::string year = date.substr(0, 4);
+    std::string month = date.substr(sep1 + 1, 2);
+    std::string day = date.substr(sep2 + 1, 2);
+    if(year.length() != 4 || !is_number(year) || month.length() != 2 || !is_number(month) || day.length() != 2 || !is_number(day))
+        return 2;
     int y = std::atoi(year.c_str()), m = std::atoi(month.c_str()), d = std::atoi(day.c_str());
     if(!calendrier_valid(y, m, d))
-        return 1;
+        return 3;
     return 0;
 }
 
 int Ressources::check_value(std::string& value)
 {
     float v;
+    if(value.empty())
+        return 1;
     if(!is_number(value) && !is_float(value))
         return 2;
-    // if(is_float(value))
-        v = static_cast<float>(std::atof(value.c_str()));
-    // else
-    //     v = static_cast<float>(std::atoi(value.c_str()));
+
+    v = static_cast<float>(std::atof(value.c_str()));
+
     if(v > 1000)
         return 3;
     if(v < 0)
@@ -157,11 +160,16 @@ void Ressources::empty_insert(void)  // in case of an error in a line i push an 
 Ressources::it Ressources::get_data(std::string& format, Ressources::it cur)
 {
     int r = 0;
+    if(format.empty()){
+        empty_insert();
+        _lst_err.push_back("");
+        return ++cur;
+    }
 
     std::string date = format.substr(0, format.find('|'));
     std::string value = format.substr(format.find('|') + 1);
     std::size_t del = format.find('|');
-    if(del == std::string::npos){
+    if(del == std::string::npos || del != format.find_last_of('|')){
         empty_insert();
         _lst_err.push_back("Error: bad input => " + format);
         return ++cur;
@@ -169,15 +177,17 @@ Ressources::it Ressources::get_data(std::string& format, Ressources::it cur)
     
     erase_sp(date);
     erase_sp(value);
-    if((r = check_date(date)) == 1){
+
+    std::string date_err[4] = {"Error: No Date.", "Error: Date Foramat invalid.", "Error: Date not Correct."};
+    if((r = check_date(date)) >= 1){
         empty_insert();
-        _lst_err.push_back("Error: date format not valid.");
+        _lst_err.push_back(date_err[r - 1]);
         return ++cur;
     }
-    std::string err[3] = {"Error: value is not valid.", "Error: too large number.", "Error: not a positive number."};
-    if((r = check_value(value)) > 1){
+    std::string err[4] = {"Error: no value.", "Error: value is not valid.", "Error: too large number.", "Error: not a positive number."};
+    if((r = check_value(value)) >= 1){
         empty_insert();
-        _lst_err.push_back(err[r - 2]);
+        _lst_err.push_back(err[r - 1]);
         return ++cur;
     }
     _dates.push_back(date);
@@ -241,5 +251,5 @@ const char* Ressources::FailOpen::what() const throw()
 
 const char* Ressources::BadFormat::what() const throw()
 {
-    return "Error: Bad format used on file.";
+    return "Error: Bad format used or empty file.";
 }

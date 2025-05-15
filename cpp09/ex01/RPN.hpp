@@ -34,6 +34,11 @@ class RPN
             public:
                 const char* what(void) const throw();
         };
+        class incompleteExpression : public std::exception
+        {
+            public:
+                const char* what(void) const throw();
+        };
 
 };
 
