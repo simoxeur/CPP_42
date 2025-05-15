@@ -37,6 +37,7 @@ class PmergeMe
         std::clock_t dtimer;
 
     public:
+        PmergeMe(){}
         PmergeMe( std::vector<int>, std::deque<int> );
         PmergeMe( const PmergeMe& );
         PmergeMe& operator=( const PmergeMe& );

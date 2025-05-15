@@ -1,5 +1,7 @@
 #include "PmergeMe.hpp"
 
+PmergeMe::PmergeMe(){}
+
 PmergeMe::PmergeMe( std::vector<int> vlst, std::deque<int> dlst ) 
     : vlist(vlst)
     , dlist(dlst)

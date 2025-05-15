@@ -1,19 +1,19 @@
 #include "PmergeMe.hpp"
 
 
-bool containers_cmp(std::vector<int>& v, std::deque<int>& d)
-{
-    std::vector<int>::iterator v_it = v.begin();
-    std::deque<int>::iterator d_it = d.begin();
-    while(v_it != v.end() && d_it != d.end())
-    {
-        if(*d_it != *v_it)
-            return false;
-        v_it++;
-        d_it++;
-    }
-    return true;
-}
+// bool containers_cmp(std::vector<int>& v, std::deque<int>& d)
+// {
+//     std::vector<int>::iterator v_it = v.begin();
+//     std::deque<int>::iterator d_it = d.begin();
+//     while(v_it != v.end() && d_it != d.end())
+//     {
+//         if(*d_it != *v_it)
+//             return false;
+//         v_it++;
+//         d_it++;
+//     }
+//     return true;
+// }
 
 int main(int ac, char **av)
 {
