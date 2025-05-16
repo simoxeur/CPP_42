@@ -37,7 +37,7 @@ class PmergeMe
         std::clock_t dtimer;
 
     public:
-        PmergeMe(){}
+        PmergeMe();
         PmergeMe( std::vector<int>, std::deque<int> );
         PmergeMe( const PmergeMe& );
         PmergeMe& operator=( const PmergeMe& );
@@ -255,12 +255,18 @@ class PmergeMe
         std::deque<int>& get_dlist();
 
         // exception
-        class error_execption : public std::exception
+        class Error_execption : public std::exception
         {
             const char* what() const throw();
         };
+
 };
 
 PmergeMe*	take_nbrs(char **args, int count);
+
+class Duplication_execption : public std::exception
+{
+    const char* what() const throw();
+};
 
 #endif

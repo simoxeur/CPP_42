@@ -4,17 +4,19 @@ Ressources::Ressources(){}
 
 Ressources::Ressources(char* file)
 {
+    if(!file)
+        throw std::runtime_error("Error: No Infile");
     infile_path = static_cast<std::string>(file);
     input_file.open(file);
     if(input_file.fail())
         throw FailOpen();
-    db_file.open("data.csv");
+    db_file.open(DATA_PATH);
     if(db_file.fail())
         throw FailOpen();
 
     std::string str;
     std::getline(db_file, str);
-    while(std::getline(db_file, str)){
+    while(!std::getline(db_file, str).eof()){
         _rates[str.substr(0, 10)] = str.substr(str.find(',') + 1);
     }
     db_file.close();
@@ -55,7 +57,7 @@ static void erase_sp(std::string& str)
     str.erase(str.find_last_not_of(' ') + 1);
 }
 
-static int bad_format(std::string format)
+static int bad_format(std::string& format)
 {
     std::size_t del = format.find('|');
     if(del == std::string::npos)
@@ -71,7 +73,7 @@ static int bad_format(std::string format)
     return 0;
 }
 
-bool calendrier_valid(int y, int m, int d)
+static bool calendrier_valid(int y, int m, int d)
 {
     if (d <= 0 || d > 31 || m <= 0 || m > 12)
         return false;
@@ -86,7 +88,7 @@ bool calendrier_valid(int y, int m, int d)
     return d <= days_in_month[m - 1];
 }
 
-bool is_number(std::string str)
+static bool is_number(std::string& str)
 {
     std::size_t i = 0;
     if(str[i] == '-' || str[i] == '+')
@@ -98,10 +100,10 @@ bool is_number(std::string str)
     return true;
 }
 
-bool is_float(std::string& str)
+static bool is_float(std::string& str)
 {
     int pcount = 0;
-    if(str.find('.') == str.length() || str.find('.') == 0)
+    if(str.find('.') == str.length() - 1 || str.find('.') == 0)
         return false;
     for(std::size_t i = 0; i < str.length(); i++){
         if(str[i] == '.')
@@ -119,7 +121,7 @@ int Ressources::check_date(std::string& date)
         return 1;
     std::size_t sep1 = date.find('-');
     std::size_t sep2 = date.find_last_of('-');
-    if(sep1 == std::string::npos || sep2 == std::string::npos)
+    if(sep1 == std::string::npos || sep2 == std::string::npos || sep1 == sep2)
         return 2;
     std::string year = date.substr(0, 4);
     std::string month = date.substr(sep1 + 1, 2);
@@ -150,7 +152,8 @@ int Ressources::check_value(std::string& value)
 
 }
 
-void Ressources::empty_insert(void)  // in case of an error in a line i push an empty string in all the conatiners to just keep the container _lst_err and check after that there is an error
+// in case of an error in a line i push an empty string in all the conatiners to just keep the container _lst_err and check after that there is an error
+void Ressources::empty_insert(void)
 {
     _dates.push_back("");
     _values.push_back("");
@@ -195,7 +198,8 @@ Ressources::it Ressources::get_data(std::string& format, Ressources::it cur)
     return ++cur;
 }
 
-void Ressources::append_rate(it dates_it)  // index for the date we have in infile inside the vector _date
+// index for the date we have in infile inside the vector _date
+void Ressources::append_rate(it dates_it)
 {
     if((*dates_it).empty())
         return;
@@ -220,7 +224,7 @@ void Ressources::validate_infile()
     if(bad_format(format))
         throw BadFormat();
     int i = 0;
-    while(std::getline(input_file, format))
+    while(!std::getline(input_file, format).eof())
     {
         dates_it = get_data(format, dates_it);
         append_rate(dates_it);

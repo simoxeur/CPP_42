@@ -2,7 +2,7 @@
 
 int main(int ac, char **av)
 {
-    if(ac > 2){
+    if(ac != 2){
         std::cout << "Bad Argument\nUsage: ./btc <input_file>\n";
         return 1;
     }

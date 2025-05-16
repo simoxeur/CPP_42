@@ -67,15 +67,27 @@ static bool nbr_valid(const char* nbr_s)
     return true;
 }
 
+static bool is_exist(std::vector<int> &lst, int value)
+{
+    std::vector<int>::iterator it = std::find(lst.begin(), lst.end(), value);
+    if(it == lst.end())
+        return false;
+    return true;
+}
+
 PmergeMe* take_nbrs(char **_args, int count)
 {
     std::vector<int> vlst;
     std::deque<int> dlst;
+    int value;
     for(int i = 0; i < count; i++){
         if(!nbr_valid(_args[i]))
-            throw PmergeMe::error_execption();
-        dlst.push_back(std::atoi(_args[i]));
-        vlst.push_back(std::atoi(_args[i]));
+        throw PmergeMe::Error_execption();
+        value = std::atoi(_args[i]);
+        if(is_exist(vlst, value))
+            throw Duplication_execption();
+        vlst.push_back(value);
+        dlst.push_back(value);
     }
     return new PmergeMe(vlst, dlst);
 }
@@ -134,7 +146,12 @@ std::vector<int>& PmergeMe::get_vlist()
 }
 
 // error_excption definition
-const char* PmergeMe::error_execption::what() const throw()
+const char* PmergeMe::Error_execption::what() const throw()
 {
     return "Error";
+}
+
+const char* Duplication_execption::what() const throw()
+{
+    return "Error: duplication is not allowed.";
 }

@@ -11,19 +11,19 @@ OBJS	=		${SRCS:.cpp=.opp}
 all: $(NAME)
 
 %.opp:%.cpp	BitcoinExchange.hpp
-	$(CPP) ${FLAGS} -c $< -o $@
+	@$(CPP) ${FLAGS} -c $< -o $@
 
 $(NAME): 		${OBJS}
-	$(CPP) ${FLAGS} ${OBJS} -o ${NAME}
-# echo "finished";
+	@$(CPP) ${FLAGS} ${OBJS} -o ${NAME}
+	@echo "finished";
 
 clean:
 	rm -f ${OBJS}
-# echo "removed files";
+	@echo "removed files";
 
 fclean: 	clean
 	rm -f $(NAME)
-# echo "removed" ${NAME};
+	@echo "removed" ${NAME};
 
 re:		fclean all
 

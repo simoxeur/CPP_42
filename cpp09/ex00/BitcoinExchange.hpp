@@ -9,6 +9,8 @@
 #include <list>
 #include <iomanip>
 
+#define DATA_PATH "data.csv"
+
 class Ressources
 {
     private:
@@ -28,7 +30,7 @@ class Ressources
         Ressources& operator=(const Ressources&);
         ~Ressources();
 
-        
+
         typedef std::list<std::string>::iterator it;
         typedef std::map<std::string, std::string>::iterator m_it;
 
