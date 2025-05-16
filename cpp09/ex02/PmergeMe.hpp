@@ -12,20 +12,6 @@
 
 unsigned long jacobsthal_sec(int n);
 
-template <typename container, typename iterator>
-bool is_sorted(container& lst)
-{
-    iterator it = lst.begin();
-    int tmp_value = *it;
-    while(++it != lst.end())
-    {
-        if(*(it) < tmp_value)
-            return false;
-        tmp_value = *it;
-    }
-    return true;
-}
-
 class PmergeMe
 {
     private:
@@ -261,6 +247,21 @@ class PmergeMe
         };
 
 };
+
+template <typename container, typename iterator>
+bool is_sorted(container& lst)
+{
+    iterator it = lst.begin();
+    int tmp_value = *it;
+    while(++it != lst.end())
+    {
+        if(*(it) < tmp_value)
+            return false;
+        tmp_value = *it;
+    }
+    return true;
+}
+
 
 PmergeMe*	take_nbrs(char **args, int count);
 

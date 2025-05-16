@@ -16,7 +16,7 @@ Ressources::Ressources(char* file)
 
     std::string str;
     std::getline(db_file, str);
-    while(!std::getline(db_file, str).eof()){
+    while(std::getline(db_file, str)){
         _rates[str.substr(0, 10)] = str.substr(str.find(',') + 1);
     }
     db_file.close();
@@ -224,7 +224,7 @@ void Ressources::validate_infile()
     if(bad_format(format))
         throw BadFormat();
     int i = 0;
-    while(!std::getline(input_file, format).eof())
+    while(std::getline(input_file, format))
     {
         dates_it = get_data(format, dates_it);
         append_rate(dates_it);
